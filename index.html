@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile Maturity Assessment — Complete Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f13;
+  --surface: #16181f;
+  --border: #2a2d3a;
+  --text-primary: #e8e9f0;
+  --text-secondary: #878aa0;
+  --text-muted: #525570;
+  --team-basilisk: #7c9eff;
+  --team-nexus: #ff9f7c;
+  --team-helios: #7cefb8;
+  --score-1: #3d2b1f;
+  --score-1-text: #d4724a;
+  --score-2: #2e2f1a;
+  --score-2-text: #c4b84a;
+  --score-3: #1a2e2e;
+  --score-3-text: #4ab8a8;
+  --score-4: #1a2a1e;
+  --score-4-text: #4adf8a;
+  --score-5: #1d2e1a;
+  --score-5-text: #7cefb8;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 40px 32px 60px;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+header {
+  margin-bottom: 32px;
+}
+.header-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: 42px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+h1 em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.header-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 300;
+  margin-bottom: 28px;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.team-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.team-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.legend-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+.score-chip {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+.view-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  bottom: -1px;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--team-helios);
+}
+.view-container {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.view-container.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Assessment Tab */
+.assessment-intro {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+.assessment-intro h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.assessment-intro p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.team-selector {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.team-select-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.team-select-btn:hover { border-color: var(--text-muted); }
+.team-select-btn.active.basilisk {
+  border-color: var(--team-basilisk);
+  background: rgba(124, 158, 255, 0.1);
+  color: var(--team-basilisk);
+}
+.team-select-btn.active.nexus {
+  border-color: var(--team-nexus);
+  background: rgba(255, 159, 124, 0.1);
+  color: var(--team-nexus);
+}
+.team-select-btn.active.helios {
+  border-color: var(--team-helios);
+  background: rgba(124, 239, 184, 0.1);
+  color: var(--team-helios);
+}
+.assessment-domain {
+  margin-bottom: 40px;
+}
+.assessment-domain-header {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.assessment-practice {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.practice-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.practice-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.rating-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.rating-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.rating-btn:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+}
+.rating-btn.selected[data-score="1"] {
+  border-color: var(--score-1-text);
+  background: var(--score-1);
+  color: var(--score-1-text);
+}
+.rating-btn.selected[data-score="2"] {
+  border-color: var(--score-2-text);
+  background: var(--score-2);
+  color: var(--score-2-text);
+}
+.rating-btn.selected[data-score="3"] {
+  border-color: var(--score-3-text);
+  background: var(--score-3);
+  color: var(--score-3-text);
+}
+.rating-btn.selected[data-score="4"] {
+  border-color: var(--score-4-text);
+  background: var(--score-4);
+  color: var(--score-4-text);
+}
+.rating-btn.selected[data-score="5"] {
+  border-color: var(--score-5-text);
+  background: var(--score-5);
+  color: var(--score-5-text);
+}
+.tier-guidance-block {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.tier-item {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+.tier-item:last-child { margin-bottom: 0; }
+.tier-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.tier-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.tier-item.t1::before { background: var(--score-1-text); }
+.tier-item.t2::before { background: var(--score-2-text); }
+.tier-item.t3::before { background: var(--score-3-text); }
+.tier-item.t4::before { background: var(--score-4-text); }
+.tier-item.t5::before { background: var(--score-5-text); }
+.notes-section label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.notes-section textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+}
+.save-assessment {
+  position: sticky;
+  bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+}
+.save-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.save-btn {
+  padding: 12px 32px;
+  background: var(--team-helios);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 239, 184, 0.3);
+}
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* History Tab */
+.history-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.history-team-filter {
+  display: flex;
+  gap: 8px;
+}
+.history-team-btn {
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.history-team-btn.active.basilisk {
+  border-color: var(--team-basilisk);
+  background: rgba(124, 158, 255, 0.1);
+  color: var(--team-basilisk);
+}
+.history-team-btn.active.nexus {
+  border-color: var(--team-nexus);
+  background: rgba(255, 159, 124, 0.1);
+  color: var(--team-nexus);
+}
+.history-team-btn.active.helios {
+  border-color: var(--team-helios);
+  background: rgba(124, 239, 184, 0.1);
+  color: var(--team-helios);
+}
+.export-btn {
+  padding: 8px 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+}
+.history-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.history-entry::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+.history-entry.basilisk::before { background: var(--team-basilisk); }
+.history-entry.nexus::before { background: var(--team-nexus); }
+.history-entry.helios::before { background: var(--team-helios); }
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.history-team-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.history-entry.basilisk .history-team-name { color: var(--team-basilisk); }
+.history-entry.nexus .history-team-name { color: var(--team-nexus); }
+.history-entry.helios .history-team-name { color: var(--team-helios); }
+.history-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.history-score {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.history-entry.basilisk .history-score { color: var(--team-basilisk); }
+.history-entry.nexus .history-score { color: var(--team-nexus); }
+.history-entry.helios .history-score { color: var(--team-helios); }
+.history-delta {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 12px;
+}
+.history-delta.positive {
+  background: rgba(124, 239, 184, 0.15);
+  color: var(--team-helios);
+}
+.history-delta.negative {
+  background: rgba(255, 159, 124, 0.15);
+  color: var(--team-nexus);
+}
+.history-domains {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.history-domain-score {
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 6px;
+}
+.history-domain-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.history-domain-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+}
+.no-history {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Detailed View styles - keeping your original */
+.tier-guide {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tier-block {
+  flex: 1;
+  padding: 12px 16px;
+  border-right: 1px solid var(--border);
+}
+.tier-block:last-child { border-right: none; }
+.tier-block.t1 { background: #1a1c25; }
+.tier-block.t2 { background: #1c1f2e; }
+.tier-block.t3 { background: #1e2235; }
+.tier-block.t4 { background: #1a2530; }
+.tier-block.t5 { background: #1a2a25; }
+.tier-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.tier-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.tier-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.domain-section {
+  margin-bottom: 32px;
+}
+.domain-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.domain-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+.domain-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.practice-grid {
+  display: grid;
+  gap: 8px;
+}
+.practice-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 1fr 1fr;
+  gap: 8px;
+}
+.practice-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.practice-name {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.practice-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+.score-cell {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: default;
+  transition: transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+.score-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  z-index: 10;
+}
+.score-cell[data-score="0"] { background: var(--surface); border-color: var(--border); }
+.score-cell[data-score="1"] { background: var(--score-1); border-color: #5a2a1f; }
+.score-cell[data-score="2"] { background: var(--score-2); border-color: #4a4a1a; }
+.score-cell[data-score="3"] { background: var(--score-3); border-color: #1a3e3e; }
+.score-cell[data-score="4"] { background: var(--score-4); border-color: #1a3a28; }
+.score-cell[data-score="5"] { background: var(--score-5); border-color: #2a4a30; }
+.score-cell.basilisk::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--team-basilisk); border-radius: 0 2px 2px 0; opacity: 0.6; }
+.score-cell.nexus::before   { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--team-nexus); border-radius: 0 2px 2px 0; opacity: 0.6; }
+.score-cell.helios::before  { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--team-helios); border-radius: 0 2px 2px 0; opacity: 0.6; }
+.cell-score {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+}
+.score-cell[data-score="0"] .cell-score { color: var(--text-muted); }
+.score-cell[data-score="1"] .cell-score { color: var(--score-1-text); }
+.score-cell[data-score="2"] .cell-score { color: var(--score-2-text); }
+.score-cell[data-score="3"] .cell-score { color: var(--score-3-text); }
+.score-cell[data-score="4"] .cell-score { color: var(--score-4-text); }
+.score-cell[data-score="5"] .cell-score { color: var(--score-5-text); }
+.cell-tier-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.score-cell[data-score="0"] .cell-tier-label { color: var(--text-muted); }
+.score-cell[data-score="1"] .cell-tier-label { color: var(--score-1-text); }
+.score-cell[data-score="2"] .cell-tier-label { color: var(--score-2-text); }
+.score-cell[data-score="3"] .cell-tier-label { color: var(--score-3-text); }
+.score-cell[data-score="4"] .cell-tier-label { color: var(--score-4-text); }
+.score-cell[data-score="5"] .cell-tier-label { color: var(--score-5-text); }
+.cell-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+.col-headers {
+  display: grid;
+  grid-template-columns: 220px 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.col-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+}
+.col-header-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.col-header-name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.summary-section {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.summary-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+.summary-card.basilisk::after { background: var(--team-basilisk); }
+.summary-card.nexus::after    { background: var(--team-nexus); }
+.summary-card.helios::after   { background: var(--team-helios); }
+.summary-team {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.summary-card.basilisk .summary-team { color: var(--team-basilisk); }
+.summary-card.nexus    .summary-team { color: var(--team-nexus); }
+.summary-card.helios   .summary-team { color: var(--team-helios); }
+.summary-avg {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.summary-card.basilisk .summary-avg { color: var(--team-basilisk); }
+.summary-card.nexus    .summary-avg { color: var(--team-nexus); }
+.summary-card.helios   .summary-avg { color: var(--team-helios); }
+.summary-level {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.bar-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 100px;
+  font-family: 'DM Mono', monospace;
+}
+.bar-track {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+.bar-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 20px;
+  text-align: right;
+}
+
+/* Radar view */
+.radar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.radar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.radar-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+.radar-card.basilisk::after { background: var(--team-basilisk); }
+.radar-card.nexus::after { background: var(--team-nexus); }
+.radar-card.helios::after { background: var(--team-helios); }
+.radar-header {
+  margin-bottom: 20px;
+}
+.radar-team-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.radar-card.basilisk .radar-team-name { color: var(--team-basilisk); }
+.radar-card.nexus .radar-team-name { color: var(--team-nexus); }
+.radar-card.helios .radar-team-name { color: var(--team-helios); }
+.radar-avg {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1;
+}
+.radar-card.basilisk .radar-avg { color: var(--team-basilisk); }
+.radar-card.nexus .radar-avg { color: var(--team-nexus); }
+.radar-card.helios .radar-avg { color: var(--team-helios); }
+.radar-canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+canvas { max-width: 100%; }
+.comparative-radar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+}
+.comp-header {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+.comp-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+.comp-canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.domain-breakdown {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.domain-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.domain-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.domain-score-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.domain-score-team {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.domain-score-val {
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+}
+.domain-score-row.basilisk .domain-score-team { color: var(--team-basilisk); }
+.domain-score-row.nexus .domain-score-team { color: var(--team-nexus); }
+.domain-score-row.helios .domain-score-team { color: var(--team-helios); }
+
+footer {
+  margin-top: 48px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-tag">Agile Centre of Excellence · Q1 2026</div>
+    <h1>Agile Maturity <em>Assessment</em></h1>
+    <div class="header-sub">Team-level benchmark across key delivery practices — Basilisk · Nexus · Helios</div>
+
+    <div class="legend-row">
+      <div class="team-pill">
+        <div class="team-dot" style="background: var(--team-basilisk)"></div>
+        Basilisk
+      </div>
+      <div class="team-pill">
+        <div class="team-dot" style="background: var(--team-nexus)"></div>
+        Nexus
+      </div>
+      <div class="team-pill">
+        <div class="team-dot" style="background: var(--team-helios)"></div>
+        Helios
+      </div>
+      <div class="legend-divider"></div>
+      <span class="score-chip" style="background:#3d2b1f;color:#d4724a">1 — Ad Hoc</span>
+      <span class="score-chip" style="background:#2e2f1a;color:#c4b84a">2 — Developing</span>
+      <span class="score-chip" style="background:#1a2e2e;color:#4ab8a8">3 — Defined</span>
+      <span class="score-chip" style="background:#1a2a1e;color:#4adf8a">4 — Managed</span>
+      <span class="score-chip" style="background:#1d2e1a;color:#7cefb8">5 — Optimising</span>
+    </div>
+  </header>
+
+  <div class="view-tabs">
+    <button class="tab-btn active" onclick="switchView('assessment')">Assessment</button>
+    <button class="tab-btn" onclick="switchView('detailed')">Detailed View</button>
+    <button class="tab-btn" onclick="switchView('radar')">Radar View</button>
+    <button class="tab-btn" onclick="switchView('history')">History</button>
+  </div>
+
+  <!-- Assessment View -->
+  <div id="view-assessment" class="view-container active">
+    <div class="assessment-intro">
+      <h2>Conduct Team Assessment</h2>
+      <p>Select a team and rate each practice. Tier guidance is shown below each practice to help you calibrate.</p>
+      
+      <div class="team-selector">
+        <button class="team-select-btn basilisk active" onclick="selectTeam('basilisk')">Basilisk</button>
+        <button class="team-select-btn nexus" onclick="selectTeam('nexus')">Nexus</button>
+        <button class="team-select-btn helios" onclick="selectTeam('helios')">Helios</button>
+      </div>
+    </div>
+
+    <div id="assessment-form"></div>
+
+    <div class="save-assessment">
+      <div class="save-info">
+        <strong id="completion-status">0 / 18 practices rated</strong><br>
+        <span style="font-size: 12px;">Scores auto-update views • Complete all to save to History</span>
+      </div>
+      <button class="save-btn" onclick="saveToHistory()" disabled>Save to History</button>
+    </div>
+  </div>
+
+  <!-- History View -->
+  <div id="view-history" class="view-container">
+    <div class="history-controls">
+      <div class="history-team-filter">
+        <button class="history-team-btn active basilisk" onclick="filterHistory('basilisk')">Basilisk</button>
+        <button class="history-team-btn active nexus" onclick="filterHistory('nexus')">Nexus</button>
+        <button class="history-team-btn active helios" onclick="filterHistory('helios')">Helios</button>
+      </div>
+      <button class="export-btn" onclick="exportHistory()">Export JSON</button>
+    </div>
+    <div id="history-timeline"></div>
+  </div>
+
+  <!-- Detailed View -->
+  <div id="view-detailed" class="view-container">
+    <div class="tier-guide">
+      <div class="tier-block t1">
+        <div class="tier-num">Tier 1</div>
+        <div class="tier-label">Ad Hoc</div>
+        <div class="tier-desc">Inconsistent, reactive. No repeatable process.</div>
+      </div>
+      <div class="tier-block t2">
+        <div class="tier-num">Tier 2</div>
+        <div class="tier-label">Developing</div>
+        <div class="tier-desc">Processes exist but applied unevenly.</div>
+      </div>
+      <div class="tier-block t3">
+        <div class="tier-num">Tier 3</div>
+        <div class="tier-label">Defined</div>
+        <div class="tier-desc">Consistent practice across the team.</div>
+      </div>
+      <div class="tier-block t4">
+        <div class="tier-num">Tier 4</div>
+        <div class="tier-label">Managed</div>
+        <div class="tier-desc">Data-informed, actively improved.</div>
+      </div>
+      <div class="tier-block t5">
+        <div class="tier-num">Tier 5</div>
+        <div class="tier-label">Optimising</div>
+        <div class="tier-desc">Continuous experimentation & coaching others.</div>
+      </div>
+    </div>
+
+    <div id="detailed-content"></div>
+    <div id="summary-section"></div>
+  </div>
+
+  <!-- Radar View -->
+  <div id="view-radar" class="view-container">
+    <div class="radar-grid">
+      <div class="radar-card basilisk">
+        <div class="radar-header">
+          <div class="radar-team-name">Team Basilisk</div>
+          <div class="radar-avg" id="radar-avg-basilisk">0.0</div>
+        </div>
+        <div class="radar-canvas-wrapper">
+          <canvas id="radarBasilisk" width="280" height="280"></canvas>
+        </div>
+      </div>
+
+      <div class="radar-card nexus">
+        <div class="radar-header">
+          <div class="radar-team-name">Team Nexus</div>
+          <div class="radar-avg" id="radar-avg-nexus">0.0</div>
+        </div>
+        <div class="radar-canvas-wrapper">
+          <canvas id="radarNexus" width="280" height="280"></canvas>
+        </div>
+      </div>
+
+      <div class="radar-card helios">
+        <div class="radar-header">
+          <div class="radar-team-name">Team Helios</div>
+          <div class="radar-avg" id="radar-avg-helios">0.0</div>
+        </div>
+        <div class="radar-canvas-wrapper">
+          <canvas id="radarHelios" width="280" height="280"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparative-radar">
+      <div class="comp-header">Comparative View</div>
+      <div class="comp-sub">All three teams overlaid</div>
+      <div class="comp-canvas-wrapper">
+        <canvas id="radarComparative" width="600" height="600"></canvas>
+      </div>
+    </div>
+
+    <div class="domain-breakdown" id="domain-breakdown"></div>
+  </div>
+
+  <footer>
+    Agile Lead Assessment Tool · All data stored locally in browser
+  </footer>
+</div>
+
+<script>
+const practices = {
+  'Ceremonies': [
+    { name: 'Sprint Planning', hint: 'Goal-setting, capacity, DoR usage',
+      guidance: { 1: 'No consistent planning; sprint goals unclear', 2: 'Planning occurs but goals formed after sprint starts', 3: 'Consistent planning; DoR checks patchy', 4: 'Capacity tracked, DoR gating in place', 5: 'Optimised; team coaches others' } },
+    { name: 'Daily Standup', hint: 'Focus, timebox, blockers surfaced',
+      guidance: { 1: 'Infrequent or poorly attended', 2: 'Drifts to status reports', 3: 'Consistent and timeboxed', 4: 'Blockers resolved same day', 5: 'Highly effective self-organisation' } },
+    { name: 'Sprint Review', hint: 'Stakeholder engagement, demo quality',
+      guidance: { 1: 'No review or no attendance', 2: 'Irregular, limited engagement', 3: 'Internal only; some stakeholder input', 4: 'Product owners engaged actively', 5: 'Exceptional demos, wide engagement' } },
+    { name: 'Retrospective', hint: 'Action follow-through, psychological safety',
+      guidance: { 1: 'Rarely held, no action', 2: 'Actions rarely followed up', 3: 'Good safety; inconsistent closure', 4: 'Actions tracked sprint-to-sprint', 5: 'Continuous improvement culture' } }
+  ],
+  'Backlog Health': [
+    { name: 'Refinement Cadence', hint: 'Regular sessions, sufficient runway',
+      guidance: { 1: 'No regular refinement', 2: 'Ad hoc catch-up sessions', 3: 'Weekly; 1–2 sprint runway', 4: '3-sprint runway; consistent sizing', 5: 'Optimised; team coaches slicing' } },
+    { name: 'Definition of Ready', hint: 'Consistent application, gate adherence',
+      guidance: { 1: 'No formal DoR', 2: 'DoR exists, inconsistently applied', 3: 'Defined; occasional bypasses', 4: 'Strict gate, consistently enforced', 5: 'DoR optimised, used as coaching tool' } },
+    { name: 'Story Quality', hint: 'AC clarity, vertical slicing, size',
+      guidance: { 1: 'Large epics; vague ACs', 2: 'Large stories; incomplete ACs', 3: 'ACs mostly clear; slicing improving', 4: 'Clear testable ACs; consistently small', 5: 'Exceptional slicing; coaches POs' } }
+  ],
+  'Metrics & Visibility': [
+    { name: 'Velocity Tracking', hint: 'Consistent, used for planning',
+      guidance: { 1: 'Not tracked or unreliable', 2: 'Tracked but not used', 3: 'Occasionally used for planning', 4: 'Informs capacity and forecasting', 5: 'Trend analysis optimised' } },
+    { name: 'Burndown / Flow', hint: 'Burndown health, WIP awareness',
+      guidance: { 1: 'Not monitored during sprint', 2: 'Viewed at retro only', 3: 'Reviewed; infrequent mid-sprint checks', 4: 'Actively monitored; WIP limits informal', 5: 'Flow metrics optimised; WIP enforced' } },
+    { name: 'Portfolio Reporting', hint: 'Upward visibility, exec readability',
+      guidance: { 1: 'No upward reporting', 2: 'Manual; inconsistent format', 3: 'Regular; format standardising', 4: 'Automated; exec-ready', 5: 'Real-time visibility; proactive insights' } }
+  ],
+  'Team Collaboration': [
+    { name: 'Cross-functional Working', hint: 'Dev/QA/Design collaboration',
+      guidance: { 1: 'Strong silos; handoffs', 2: 'Work in sequence', 3: 'Coordinating; some silos', 4: 'QA embedded; collaborative', 5: 'Fully integrated; coaches others' } },
+    { name: 'Psychological Safety', hint: 'Openness to risk, retro honesty',
+      guidance: { 1: 'Fear-based; issues hidden', 2: 'Cautious; limited issues surfaced', 3: 'Growing openness', 4: 'Issues raised openly; trust high', 5: 'Exceptional trust; failures celebrated' } },
+    { name: 'Stakeholder Engagement', hint: 'PO availability, feedback speed',
+      guidance: { 1: 'PO often unavailable', 2: 'Occasionally unavailable', 3: 'PO accessible; sometimes slow', 4: 'Daily touchpoints; fast feedback', 5: 'PO fully embedded' } }
+  ],
+  'Engineering Practices': [
+    { name: 'Definition of Done', hint: 'Consistency, DoD rigour',
+      guidance: { 1: 'No defined DoD', 2: 'Informal; inconsistently applied', 3: 'Documented; occasional exceptions', 4: 'Strictly applied; gated', 5: 'DoD optimised; coaching tool' } },
+    { name: 'Test Coverage', hint: 'Regression, automation, QA integration',
+      guidance: { 1: 'Minimal regression; QA at end', 2: 'Patchy regression; QA late', 3: 'Manual regression consistent', 4: 'Automated suite; shift-left QA', 5: 'Comprehensive automation; TDD' } },
+    { name: 'Technical Debt Mgmt', hint: 'Visibility, sprint allocation',
+      guidance: { 1: 'Untracked; builds silently', 2: 'Known but rarely allocated', 3: 'Backlog maintained; ~10% capacity', 4: 'Tracked and prioritised', 5: 'Proactive management; architecture evolves' } }
+  ],
+  'Continuous Improvement': [
+    { name: 'Experimentation', hint: 'Team-led process experiments',
+      guidance: { 1: 'Change-averse', 2: 'SM-driven improvements only', 3: 'Open to trying new techniques', 4: 'Team proposes experiments', 5: 'Continuous experimentation culture' } },
+    { name: 'Agile Knowledge', hint: 'Team understanding of principles',
+      guidance: { 1: 'Limited; follow by rote', 2: 'Ceremonies followed; principles less understood', 3: 'Core understanding solid', 4: 'Strong understanding; ask good questions', 5: 'Deep expertise; coach others' } },
+    { name: 'Coaching Receptivity', hint: 'Response to SM guidance',
+      guidance: { 1: 'Resistant; defensive', 2: 'Polite compliance', 3: 'Receptive; sometimes acts', 4: 'Actively seeks coaching', 5: 'Self-directed improvement' } }
+  ]
+};
+
+const domains = ['Ceremonies', 'Backlog Health', 'Metrics & Visibility', 'Team Collaboration', 'Engineering Practices', 'Continuous Improvement'];
+
+let currentTeam = 'basilisk';
+let teamScores = JSON.parse(localStorage.getItem('agileScores') || '{}');
+let history = JSON.parse(localStorage.getItem('agileHistory') || '[]');
+let activeFilters = ['basilisk', 'nexus', 'helios'];
+
+function switchView(view) {
+  document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  event.target.classList.add('active');
+  
+  if (view === 'history') renderHistory();
+  if (view === 'detailed') renderDetailed();
+  if (view === 'radar') {
+    renderRadar();
+    setTimeout(() => {
+      const data = getTeamData();
+      drawRadar('radarBasilisk', 'basilisk', data);
+      drawRadar('radarNexus', 'nexus', data);
+      drawRadar('radarHelios', 'helios', data);
+      drawRadar('radarComparative', null, data, true);
+      renderDomainBreakdown(data);
+    }, 100);
+  }
+}
+
+function selectTeam(team) {
+  currentTeam = team;
+  document.querySelectorAll('.team-select-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderAssessment();
+}
+
+function renderAssessment() {
+  const form = document.getElementById('assessment-form');
+  let html = '';
+  
+  Object.entries(practices).forEach(([domain, domainPractices]) => {
+    html += `<div class="assessment-domain"><div class="assessment-domain-header">${domain}</div>`;
+    
+    domainPractices.forEach(practice => {
+      const id = `${domain}-${practice.name}`.replace(/\s+/g, '-');
+      const currentScore = teamScores[currentTeam]?.[id] || 0;
+      const currentNote = teamScores[currentTeam]?.['note-' + id] || '';
+      
+      html += `
+        <div class="assessment-practice">
+          <div class="practice-title">${practice.name}</div>
+          <div class="practice-description">${practice.hint}</div>
+          <div class="rating-buttons">
+            ${[1,2,3,4,5].map(s => `
+              <button class="rating-btn ${s === currentScore ? 'selected' : ''}" 
+                      data-score="${s}" 
+                      onclick="setRating('${id}', ${s}, this)">${s}</button>
+            `).join('')}
+          </div>
+          <div class="tier-guidance-block">
+            <div class="tier-item t1"><strong>1 — Ad Hoc:</strong> ${practice.guidance[1]}</div>
+            <div class="tier-item t2"><strong>2 — Developing:</strong> ${practice.guidance[2]}</div>
+            <div class="tier-item t3"><strong>3 — Defined:</strong> ${practice.guidance[3]}</div>
+            <div class="tier-item t4"><strong>4 — Managed:</strong> ${practice.guidance[4]}</div>
+            <div class="tier-item t5"><strong>5 — Optimising:</strong> ${practice.guidance[5]}</div>
+          </div>
+          <div class="notes-section">
+            <label>Notes (optional)</label>
+            <textarea id="note-${id}" onchange="saveNote('${id}', this.value)">${currentNote}</textarea>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+  });
+  
+  form.innerHTML = html;
+  updateCompletion();
+}
+
+function setRating(id, score, btn) {
+  if (!teamScores[currentTeam]) teamScores[currentTeam] = {};
+  
+  // If clicking the same score, deselect it
+  if (teamScores[currentTeam][id] === score) {
+    teamScores[currentTeam][id] = 0;
+    btn.classList.remove('selected');
+  } else {
+    teamScores[currentTeam][id] = score;
+    btn.parentElement.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  
+  localStorage.setItem('agileScores', JSON.stringify(teamScores));
+  updateCompletion();
+  renderDetailed();
+}
+
+function saveNote(id, note) {
+  if (!teamScores[currentTeam]) teamScores[currentTeam] = {};
+  teamScores[currentTeam]['note-' + id] = note;
+  localStorage.setItem('agileScores', JSON.stringify(teamScores));
+  renderDetailed();
+}
+
+function updateCompletion() {
+  const total = 18;
+  const scores = teamScores[currentTeam] || {};
+  const completed = Object.keys(scores).filter(k => !k.startsWith('note-') && scores[k] > 0).length;
+  
+  document.getElementById('completion-status').textContent = `${completed} / ${total} practices rated`;
+  document.querySelector('.save-btn').disabled = completed !== total;
+}
+
+function saveToHistory() {
+  const scores = teamScores[currentTeam];
+  const domainScores = {
+    ceremonies: calcDomain('Ceremonies'),
+    backlog: calcDomain('Backlog Health'),
+    metrics: calcDomain('Metrics & Visibility'),
+    collaboration: calcDomain('Team Collaboration'),
+    engineering: calcDomain('Engineering Practices'),
+    improvement: calcDomain('Continuous Improvement')
+  };
+  const overall = Object.values(domainScores).reduce((a,b) => a+b, 0) / 6;
+  
+  history.push({
+    team: currentTeam,
+    date: new Date().toISOString(),
+    overall: overall,
+    domains: domainScores,
+    scores: JSON.parse(JSON.stringify(scores))
+  });
+  
+  localStorage.setItem('agileHistory', JSON.stringify(history));
+  alert(`Assessment saved for Team ${currentTeam.charAt(0).toUpperCase() + currentTeam.slice(1)}!`);
+  renderHistory();
+}
+
+function calcDomain(domain) {
+  const domainPractices = practices[domain];
+  let sum = 0;
+  domainPractices.forEach(p => {
+    const id = `${domain}-${p.name}`.replace(/\s+/g, '-');
+    sum += teamScores[currentTeam]?.[id] || 0;
+  });
+  return sum / domainPractices.length;
+}
+
+function renderHistory() {
+  const timeline = document.getElementById('history-timeline');
+  const filtered = history.filter(e => activeFilters.includes(e.team));
+  
+  if (filtered.length === 0) {
+    timeline.innerHTML = '<div class="no-history">No assessments saved yet.</div>';
+    return;
+  }
+  
+  let html = '';
+  filtered.reverse().forEach((entry, idx) => {
+    const date = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    
+    let deltaHtml = '';
+    if (idx < filtered.length - 1) {
+      const prev = filtered[idx + 1];
+      if (prev.team === entry.team) {
+        const delta = (entry.overall - prev.overall).toFixed(1);
+        const dir = delta >= 0 ? 'positive' : 'negative';
+        const sym = delta >= 0 ? '▲' : '▼';
+        deltaHtml = `<span class="history-delta ${dir}">${sym} ${Math.abs(delta)}</span>`;
+      }
+    }
+    
+    html += `
+      <div class="history-entry ${entry.team}">
+        <div class="history-header">
+          <div class="history-team-name">Team ${entry.team.charAt(0).toUpperCase() + entry.team.slice(1)}</div>
+          <div class="history-date">${date}</div>
+        </div>
+        <div class="history-score">${entry.overall.toFixed(1)} ${deltaHtml}</div>
+        <div class="history-domains">
+          <div class="history-domain-score">
+            <div class="history-domain-name">Ceremonies</div>
+            <div class="history-domain-val">${entry.domains.ceremonies.toFixed(1)}</div>
+          </div>
+          <div class="history-domain-score">
+            <div class="history-domain-name">Backlog</div>
+            <div class="history-domain-val">${entry.domains.backlog.toFixed(1)}</div>
+          </div>
+          <div class="history-domain-score">
+            <div class="history-domain-name">Metrics</div>
+            <div class="history-domain-val">${entry.domains.metrics.toFixed(1)}</div>
+          </div>
+          <div class="history-domain-score">
+            <div class="history-domain-name">Collaboration</div>
+            <div class="history-domain-val">${entry.domains.collaboration.toFixed(1)}</div>
+          </div>
+          <div class="history-domain-score">
+            <div class="history-domain-name">Engineering</div>
+            <div class="history-domain-val">${entry.domains.engineering.toFixed(1)}</div>
+          </div>
+          <div class="history-domain-score">
+            <div class="history-domain-name">Improvement</div>
+            <div class="history-domain-val">${entry.domains.improvement.toFixed(1)}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  timeline.innerHTML = html;
+}
+
+function filterHistory(team) {
+  const btn = event.target;
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active');
+    activeFilters = activeFilters.filter(t => t !== team);
+  } else {
+    btn.classList.add('active');
+    activeFilters.push(team);
+  }
+  renderHistory();
+}
+
+function exportHistory() {
+  const data = JSON.stringify(history, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'agile-maturity-history.json';
+  a.click();
+}
+
+function renderDetailed() {
+  const content = document.getElementById('detailed-content');
+  let html = '';
+  
+  Object.entries(practices).forEach(([domain, domainPractices], idx) => {
+    html += `
+      <div class="domain-section">
+        <div class="domain-header">
+          <div class="domain-name">${domain}</div>
+          <div class="domain-tag">${String(idx + 1).padStart(2, '0')} / 06</div>
+        </div>
+        <div class="col-headers">
+          <div class="col-header"></div>
+          <div class="col-header">
+            <div class="col-header-dot" style="background:var(--team-basilisk)"></div>
+            <div class="col-header-name" style="color:var(--team-basilisk)">Basilisk</div>
+          </div>
+          <div class="col-header">
+            <div class="col-header-dot" style="background:var(--team-nexus)"></div>
+            <div class="col-header-name" style="color:var(--team-nexus)">Nexus</div>
+          </div>
+          <div class="col-header">
+            <div class="col-header-dot" style="background:var(--team-helios)"></div>
+            <div class="col-header-name" style="color:var(--team-helios)">Helios</div>
+          </div>
+        </div>
+        <div class="practice-grid">
+    `;
+    
+    domainPractices.forEach(practice => {
+      const id = `${domain}-${practice.name}`.replace(/\s+/g, '-');
+      const basiliskScore = teamScores.basilisk?.[id] || 0;
+      const nexusScore = teamScores.nexus?.[id] || 0;
+      const heliosScore = teamScores.helios?.[id] || 0;
+      const basiliskNote = teamScores.basilisk?.['note-' + id] || '';
+      const nexusNote = teamScores.nexus?.['note-' + id] || '';
+      const heliosNote = teamScores.helios?.['note-' + id] || '';
+      
+      const tierNames = ['—', 'Ad Hoc', 'Developing', 'Defined', 'Managed', 'Optimising'];
+      
+      html += `
+        <div class="practice-row">
+          <div class="practice-label">
+            <div class="practice-name">${practice.name}</div>
+            <div class="practice-hint">${practice.hint}</div>
+          </div>
+          <div class="score-cell basilisk" data-score="${basiliskScore}">
+            <div class="cell-score">${basiliskScore || '—'}</div>
+            <div class="cell-tier-label">${tierNames[basiliskScore]}</div>
+            ${basiliskNote ? `<div class="cell-note">${basiliskNote}</div>` : ''}
+          </div>
+          <div class="score-cell nexus" data-score="${nexusScore}">
+            <div class="cell-score">${nexusScore || '—'}</div>
+            <div class="cell-tier-label">${tierNames[nexusScore]}</div>
+            ${nexusNote ? `<div class="cell-note">${nexusNote}</div>` : ''}
+          </div>
+          <div class="score-cell helios" data-score="${heliosScore}">
+            <div class="cell-score">${heliosScore || '—'}</div>
+            <div class="cell-tier-label">${tierNames[heliosScore]}</div>
+            ${heliosNote ? `<div class="cell-note">${heliosNote}</div>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div></div>';
+  });
+  
+  content.innerHTML = html;
+  renderSummary();
+}
+
+function renderSummary() {
+  const summary = document.getElementById('summary-section');
+  const data = getTeamData();
+  
+  let html = '<div class="summary-section">';
+  
+  ['basilisk', 'nexus', 'helios'].forEach(team => {
+    const teamData = data[team];
+    const teamName = team.charAt(0).toUpperCase() + team.slice(1);
+    
+    html += `
+      <div class="summary-card ${team}">
+        <div class="summary-team">Team ${teamName}</div>
+        <div class="summary-avg">${teamData.overall.toFixed(1)}</div>
+        <div class="summary-level">${getLevelText(teamData.overall)}</div>
+        <div style="margin: 14px 0 8px;">
+          ${domains.map((d, i) => {
+            const val = teamData.scores[i];
+            const pct = (val / 5) * 100;
+            return `<div class="bar-row"><div class="bar-label">${d.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--team-${team});opacity:0.7"></div></div><div class="bar-val">${val.toFixed(1)}</div></div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  summary.innerHTML = html;
+}
+
+function getLevelText(score) {
+  if (score < 1.5) return 'Ad Hoc';
+  if (score < 2.5) return 'Ad Hoc → Developing';
+  if (score < 3.5) return 'Developing → Defined';
+  if (score < 4.5) return 'Defined → Managed';
+  return 'Managed → Optimising';
+}
+
+function getTeamData() {
+  const data = {};
+  
+  ['basilisk', 'nexus', 'helios'].forEach(team => {
+    const scores = domains.map(d => {
+      const domainPractices = practices[d];
+      let sum = 0;
+      domainPractices.forEach(p => {
+        const id = `${d}-${p.name}`.replace(/\s+/g, '-');
+        sum += teamScores[team]?.[id] || 0;
+      });
+      return sum / domainPractices.length;
+    });
+    
+    const overall = scores.reduce((a,b) => a+b, 0) / scores.length;
+    
+    data[team] = {
+      name: team.charAt(0).toUpperCase() + team.slice(1),
+      color: `var(--team-${team})`,
+      scores: scores,
+      overall: overall
+    };
+  });
+  
+  return data;
+}
+
+function renderRadar() {
+  const data = getTeamData();
+  ['basilisk', 'nexus', 'helios'].forEach(team => {
+    document.getElementById(`radar-avg-${team}`).textContent = data[team].overall.toFixed(1);
+  });
+}
+
+function drawRadar(canvasId, teamKey, allData, comparative = false) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const maxRadius = comparative ? 240 : 120;
+  const levels = 5;
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.strokeStyle = '#2a2d3a';
+  ctx.lineWidth = 1;
+  for (let i = 1; i <= levels; i++) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, (maxRadius / levels) * i, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  
+  const angleStep = (Math.PI * 2) / domains.length;
+  ctx.fillStyle = comparative ? '#878aa0' : '#525570';
+  ctx.font = comparative ? '11px DM Mono' : '10px DM Mono';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  domains.forEach((domain, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const x = centerX + Math.cos(angle) * maxRadius;
+    const y = centerY + Math.sin(angle) * maxRadius;
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    
+    const labelRadius = maxRadius + (comparative ? 40 : 30);
+    const labelX = centerX + Math.cos(angle) * labelRadius;
+    const labelY = centerY + Math.sin(angle) * labelRadius;
+    
+    if (comparative) {
+      const words = domain.split(' ');
+      if (words.length > 1) {
+        ctx.fillText(words[0], labelX, labelY - 7);
+        ctx.fillText(words.slice(1).join(' '), labelX, labelY + 7);
+      } else {
+        ctx.fillText(domain, labelX, labelY);
+      }
+    } else {
+      ctx.fillText(domain, labelX, labelY);
+    }
+  });
+  
+  ctx.fillStyle = '#525570';
+  ctx.font = '9px DM Mono';
+  ctx.textAlign = 'left';
+  for (let i = 1; i <= levels; i++) {
+    const r = (maxRadius / levels) * i;
+    ctx.fillText(i.toString(), centerX + 4, centerY - r + 2);
+  }
+  
+  if (comparative) {
+    Object.entries(allData).forEach(([key, team]) => {
+      drawTeamShape(ctx, centerX, centerY, maxRadius, angleStep, team.scores, team.color, 0.15, 0.5);
+    });
+  } else {
+    const team = allData[teamKey];
+    drawTeamShape(ctx, centerX, centerY, maxRadius, angleStep, team.scores, team.color, 0.2, 0.8);
+  }
+}
+
+function drawTeamShape(ctx, centerX, centerY, maxRadius, angleStep, scores, colorStr, fillAlpha, strokeAlpha) {
+  const color = colorStr.replace('var(--team-', '').replace(')', '');
+  const colorMap = { basilisk: '#7c9eff', nexus: '#ff9f7c', helios: '#7cefb8' };
+  const hexColor = colorMap[color] || '#7cefb8';
+  
+  ctx.beginPath();
+  scores.forEach((score, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const r = (score / 5) * maxRadius;
+    const x = centerX + Math.cos(angle) * r;
+    const y = centerY + Math.sin(angle) * r;
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  ctx.closePath();
+  
+  ctx.fillStyle = hexColor + Math.round(fillAlpha * 255).toString(16).padStart(2, '0');
+  ctx.fill();
+  
+  ctx.strokeStyle = hexColor + Math.round(strokeAlpha * 255).toString(16).padStart(2, '0');
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  ctx.fillStyle = hexColor;
+  scores.forEach((score, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const r = (score / 5) * maxRadius;
+    const x = centerX + Math.cos(angle) * r;
+    const y = centerY + Math.sin(angle) * r;
+    
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function renderDomainBreakdown(data) {
+  const breakdown = document.getElementById('domain-breakdown');
+  let html = '';
+  
+  domains.forEach((domain, idx) => {
+    html += `
+      <div class="domain-card">
+        <div class="domain-card-title">${domain}</div>
+        <div class="domain-score-row basilisk">
+          <div class="domain-score-team">Basilisk</div>
+          <div class="domain-score-val">${data.basilisk.scores[idx].toFixed(1)}</div>
+        </div>
+        <div class="domain-score-row nexus">
+          <div class="domain-score-team">Nexus</div>
+          <div class="domain-score-val">${data.nexus.scores[idx].toFixed(1)}</div>
+        </div>
+        <div class="domain-score-row helios">
+          <div class="domain-score-team">Helios</div>
+          <div class="domain-score-val">${data.helios.scores[idx].toFixed(1)}</div>
+        </div>
+      </div>
+    `;
+  });
+  
+  breakdown.innerHTML = html;
+}
+
+// Initialize
+renderAssessment();
+renderHistory();
+renderDetailed();
+</script>
+
+</body>
+</html>
